@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Bitte bestätige deine Registrierung</title>
+		<style>
+      p {
+        font-family: Georgia, 'Times New Roman', Times, serif;
+      }
+
+      a {
+        text-decoration: none;
+        padding: 12px 25px;
+        background-color: #444DF2;
+        color: white;
+        border-radius: 25px;
+        font-weight: 800;
+      }
+    </style>
+	</head>
+	<body>
+		<p>
+			Hallo {{ firstname }}, 
+      <br><br> 
+      vielen Dank für deine Registrierung bei DABubble!
+      <br>
+      Um deinen Account zu aktivieren, bestätige bitte deine E-Mail-Adresse, indem du auf den folgenden Link klickst:
+      <br><br><br>
+			<a href="{{ activation_link }}">Aktivieren</a>
+      <br><br><br>
+      Ohne diese Bestätigung kannst du dein Konto nicht nutzen. Wenn du dich nicht bei
+			uns registriert hast, kannst du diese E-Mail einfach ignorieren.<br>
+      Bei Fragen steht dir unser Support-Team
+			jederzeit zur Verfügung.
+      <br><br>
+      Viele Grüße
+      <br>
+      <br>
+      Dein DABubble-Team
+      <br><br><br>
+      <img src="https://daniel-lehmann.dev/assets/dabubble-email.png" alt="dabubble-logo">
+		</p>
+	</body>
+</html>
