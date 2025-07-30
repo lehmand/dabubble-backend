@@ -3,8 +3,8 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="refresh" content="5;url={{ success_url }}" />
-		<title>Activation complete</title>
+		<meta http-equiv="refresh" content="15;url=https://dabubble.daniel-lehmann.dev/login/" />
+		<title>Activation failed</title>
 		<style>
 			p {
 				font-family: Georgia, 'Times New Roman', Times, serif;
@@ -18,27 +18,43 @@
 				border-radius: 25px;
 				font-weight: 800;
 			}
+
+			span {
+				background-color: #444df2;
+				color: white;
+				border-radius: 24px;
+				padding: 2px 8px;
+			}
 		</style>
 	</head>
 	<body>
 		<p>
 			Hallo {{ first_name }},
 			<br /><br />
-			deine E-Mail-Adresse wurde erfolgreich bestätigt und dein Konto ist jetzt aktiv.
+			leider konnte dein Account nicht aktiviert werden.
+			<br>
+			Mögliche Gründe:
+			<ul>
+				<li>Der Aktivierungslink ist abgelaufen oder wurde bereits verwendet</li>
+				<li>Der Link ist ungültig oder unvollständig</li>
+				<li>Es gab ein technisches Problem</li>
+			</ul>
 			<br />
-			Du wirst in <span id="countdown"></span> Sekunden automatisch weitergeleitet... Falls die Weiterleitung
-			nicht funktioniert, klicke bitte hier: <br /><br /><br>
-			<a href="{{ success_url }}">Zum Login</a>
-			<br /><br /><br>
-			Vielen Dank, dass du Teil von DABubble bist!
+			<a href="{{ new_link }}">Neuen Link anfordern</a>
+			<br><br><br>
+			Wenn das Problem weiterhin besteht, wende dich gerne an unser Support-Team.
 			<br /><br />
-			Viel Spaß beim Entdecken!
+			Vielen Dank für dein Verständnis!
+			<br /><br><br>
+			Dein DABubble Team
+			<br><br><br>
+			Du wirst in <span id="countdown"></span> Sekunden automatisch weitergeleitet.
       <br><br><br>
       <img src="https://daniel-lehmann.dev/assets/dabubble-email.png" alt="dabubble-logo">
 		</p>
 
 		<script>
-			let counter = 5;
+			let counter = 15;
 			function countDown() {
 				span = document.getElementById('countdown').innerHTML = counter;
 				setTimeout(() => {
