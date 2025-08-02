@@ -7,6 +7,8 @@ from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from .utils import create_activation_link, send_activation_email
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 User = get_user_model()
 
@@ -55,3 +57,35 @@ class ActivationView(APIView):
 				'first_name': user.first_name
 			}
 			return render(request, 'auth_api/redirect_pages/activation_invalid.html', failed_context)
+
+
+class CookieTokenObtainPairView(TokenObtainPairView):
+	"""Customized View to set cookies for the access and refresh tokens"""
+	serializer_class = TokenObtainPairSerializer
+
+	def post(self, request, *args, **kwargs):
+		response = super().post(request, *args, **kwargs)
+
+		token_data = response.data
+		access_token = token_data.get('access')
+		refresh_token = token_data.get('refresh')
+
+		response.set_cookie(
+			key='access_token',
+			value=access_token,
+			httponly=True,
+			secure=False,
+			samesite='Lax'
+		)
+
+		response.set_cookie(
+			key='refresh_token',
+			value=refresh_token,
+			httponly=True,
+			secure=False,
+			samesite='Lax'
+		)
+
+		return response
+		
+
