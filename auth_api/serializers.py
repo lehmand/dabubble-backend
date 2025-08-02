@@ -73,19 +73,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
         return user
     
-    def to_representation(self, instance):
-        """Transforms the user object to JSON format for the frontend"""
-
-        represent = super().to_representation(instance)
-
-        return {
-            'id': represent['id'],
-            'firstName': represent['first_name'],
-            'lastName': represent['last_name'],
-            'email': represent['email'],
-            'avatarUrl': represent['avatar_url']
-        }
-    
 class UserSerializer(serializers.ModelSerializer):
     """Serializer returns User object for token"""
 
