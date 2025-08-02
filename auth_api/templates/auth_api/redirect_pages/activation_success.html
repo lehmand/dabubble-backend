@@ -6,6 +6,20 @@
 		<meta http-equiv="refresh" content="5;url={{ success_url }}" />
 		<title>Activation complete</title>
 		<style>
+			body {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+				background-color: #ECEEFE;
+			}
+			.text-container {
+				background-color: white;
+				padding: 24px;
+				border-radius: 25px;
+				text-align: center;
+			}
 			p {
 				font-family: Georgia, 'Times New Roman', Times, serif;
 			}
@@ -18,24 +32,32 @@
 				border-radius: 25px;
 				font-weight: 800;
 			}
+			span {
+				background-color: #444df2;
+				color: white;
+				border-radius: 24px;
+				padding: 2px 16px;
+			}
 		</style>
 	</head>
 	<body>
-		<p>
-			Hallo {{ first_name }},
-			<br /><br />
-			deine E-Mail-Adresse wurde erfolgreich bestätigt und dein Konto ist jetzt aktiv.
-			<br />
-			Du wirst in <span id="countdown"></span> Sekunden automatisch weitergeleitet... Falls die Weiterleitung
-			nicht funktioniert, klicke bitte hier: <br /><br /><br>
-			<a href="{{ success_url }}">Zum Login</a>
-			<br /><br /><br>
-			Vielen Dank, dass du Teil von DABubble bist!
-			<br /><br />
-			Viel Spaß beim Entdecken!
-      <br><br><br>
-      <img src="https://daniel-lehmann.dev/assets/dabubble-email.png" alt="dabubble-logo">
-		</p>
+		<div class="text-container">
+			<p>
+				Hallo {{ first_name }},
+				<br /><br />
+				deine E-Mail-Adresse wurde erfolgreich bestätigt und dein Konto ist jetzt aktiv.
+				<br />
+				Du wirst in <span id="countdown"></span> Sekunden automatisch weitergeleitet... Falls die Weiterleitung
+				nicht funktioniert, klicke bitte hier: <br /><br /><br>
+				<a href="{{ success_url }}">Zum Login</a>
+				<br /><br /><br>
+				Vielen Dank, dass du Teil von DABubble bist!
+				<br /><br />
+				Viel Spaß beim Entdecken!
+		  <br><br><br>
+		  <img src="https://daniel-lehmann.dev/assets/dabubble-email.png" alt="dabubble-logo">
+			</p>
+		</div>
 
 		<script>
 			let counter = 5;

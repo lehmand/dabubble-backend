@@ -6,8 +6,29 @@
 		<meta http-equiv="refresh" content="15;url=https://dabubble.daniel-lehmann.dev/login/" />
 		<title>Activation failed</title>
 		<style>
+			body { 
+				background-color: #ECEEFE;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				height: 100vh;
+			}
+
+			.text-container {
+				background-color: white;
+				padding: 24px;
+				border-radius: 25px;
+				box-shadow: black 4px 4px 25px 0px;
+				text-align: center;
+			}
+
 			p {
 				font-family: Georgia, 'Times New Roman', Times, serif;
+			}
+
+			ul {
+				text-align: left;
 			}
 
 			a {
@@ -23,35 +44,37 @@
 				background-color: #444df2;
 				color: white;
 				border-radius: 24px;
-				padding: 2px 8px;
+				padding: 2px 16px;
 			}
 		</style>
 	</head>
 	<body>
-		<p>
-			Hallo {{ first_name }},
-			<br /><br />
-			leider konnte dein Account nicht aktiviert werden.
-			<br>
-			Mögliche Gründe:
-			<ul>
-				<li>Der Aktivierungslink ist abgelaufen oder wurde bereits verwendet</li>
-				<li>Der Link ist ungültig oder unvollständig</li>
-				<li>Es gab ein technisches Problem</li>
-			</ul>
-			<br />
-			<a href="{{ new_link }}">Neuen Link anfordern</a>
-			<br><br><br>
-			Wenn das Problem weiterhin besteht, wende dich gerne an unser Support-Team.
-			<br /><br />
-			Vielen Dank für dein Verständnis!
-			<br /><br><br>
-			Dein DABubble Team
-			<br><br><br>
-			Du wirst in <span id="countdown"></span> Sekunden automatisch weitergeleitet.
-      <br><br><br>
-      <img src="https://daniel-lehmann.dev/assets/dabubble-email.png" alt="dabubble-logo">
-		</p>
+		<div class="text-container">
+			<p>
+				Hallo {{ first_name }},
+				<br /><br />
+				leider konnte dein Account nicht aktiviert werden.
+				<br>
+				Mögliche Gründe:
+				<ul>
+					<li>Der Aktivierungslink ist abgelaufen oder wurde bereits verwendet</li>
+					<li>Der Link ist ungültig oder unvollständig</li>
+					<li>Es gab ein technisches Problem</li>
+				</ul>
+				<br />
+				<a href="{{ new_link }}">Neuen Link anfordern</a>
+				<br><br><br>
+				Wenn das Problem weiterhin besteht, wende dich gerne an unser Support-Team.
+				<br /><br />
+				Vielen Dank für dein Verständnis!
+				<br /><br><br>
+				Dein DABubble Team
+				<br><br><br>
+				Du wirst in <span id="countdown"></span> Sekunden automatisch weitergeleitet.
+		  <br><br><br>
+		  <img src="https://daniel-lehmann.dev/assets/dabubble-email.png" alt="dabubble-logo">
+			</p>
+		</div>
 
 		<script>
 			let counter = 15;
