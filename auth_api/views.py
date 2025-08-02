@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
-from .serializers import RegistrationSerializer
+from .serializers import RegistrationSerializer, UserSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from django.utils.http import urlsafe_base64_decode
@@ -55,3 +55,12 @@ class ActivationView(APIView):
 				'first_name': user.first_name
 			}
 			return render(request, 'auth_api/redirect_pages/activation_invalid.html', failed_context)
+
+
+class UserView(APIView):
+	"""Handles the request for the User object"""
+
+	def post(self, request):
+		
+		serializer = UserSerializer(request.user)
+		return Response(serializer.data)
