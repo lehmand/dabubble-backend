@@ -8,7 +8,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'date_joined', 'avatar_url', 'is_online']
+        fields = ['id', 'first_name', 'last_name', 'email', 'date_joined', 'avatar_url', 'is_online', 'is_activated']
 
     def to_representation(self, instance):
         rep = super().to_representation(instance)
@@ -20,5 +20,6 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             'email': rep['email'],
             'dateJoined': rep['date_joined'],
             'avatarUrl': rep['avatar_url'],
-            'isOnline': rep['is_online']
+            'isOnline': rep['is_online'],
+            'isActivated': rep['is_activated']
         }
