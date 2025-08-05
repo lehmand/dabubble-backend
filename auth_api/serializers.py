@@ -59,8 +59,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
         name_parts = validated_data['name'].strip().split()
         first_name = name_parts[0]
         last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
+        username = validated_data.get('email').split('@')[0]
 
         user = User(
+            username = username,
             first_name = first_name,
             last_name = last_name,
             email = validated_data['email'],
@@ -72,3 +74,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
+    
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+
+        return {
+            'id': rep['id'],
+            'firstName': rep['first_name'],
+            'lastName': rep['last_name'],
+            'email': rep['email'],
+            'avatarUrl': rep['avatar_url']
+        }
