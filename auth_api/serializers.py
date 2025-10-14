@@ -15,7 +15,10 @@ class RegistrationSerializer(serializers.ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def __init__(self, *args, **kwargs):
-        """Transforms initial data from JSON format to snake_case"""
+        """Transforms initial data from JSON format to snake_case
+        
+        Note: This is done manually on purpose for practice reasons
+        There is a third party package available for this procedure."""
 
         if 'data' in kwargs:
             data = kwargs['data']
@@ -76,6 +79,12 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return user
     
     def to_representation(self, instance):
+        """Transforms snake_case format to JSON for the frontend
+
+        Note: This is done manually on purpose for practice reasons
+        There is a third party package available for this procedure.        
+        """        
+            
         rep = super().to_representation(instance)
 
         return {
