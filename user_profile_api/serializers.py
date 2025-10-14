@@ -13,7 +13,8 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'email', 'date_joined', 'avatar_url', 'is_online', 'is_activated']
 
     def to_representation(self, instance):
-        """Tranforms snake_case to JSON format
+        """
+        Tranforms snake_case to JSON format
 
         Note: This is done manually on purpose for practice reason
         There is a third party package available for this procedure.
@@ -65,9 +66,7 @@ class UpdateOrDeleteCurrentUserSerializer(serializers.ModelSerializer):
 
 
     def update(self, instance, validated_data):
-        """
-        Updates the current user object
-        """
+        """Updates the current user object"""
         
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
