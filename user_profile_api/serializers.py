@@ -13,8 +13,10 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'email', 'date_joined', 'avatar_url', 'is_online', 'is_activated']
 
     def to_representation(self, instance):
-        """
-        Tranforms snake_case to JSON format
+        """Tranforms snake_case to JSON format
+
+        Note: This is done manually on purpose for practice reason
+        There is a third party package available for this procedure.
         """
 
         rep = super().to_representation(instance)
@@ -40,6 +42,9 @@ class UpdateOrDeleteCurrentUserSerializer(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
         """
         Transform JSON data to snake_case
+
+        Note: This is done manually on purpose for practice reason
+        There is a third party package available for this procedure.
         """
 
         if 'data' in kwargs:
@@ -73,6 +78,9 @@ class UpdateOrDeleteCurrentUserSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """
         Transforms snake_case to JSON format
+
+        Note: This is done manually on purpose for practice reason
+        There is a third party package available for this procedure.
         """
 
         resp = super().to_representation(instance)
