@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import UserProfile
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.response import Response
@@ -12,6 +13,12 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'email']
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    """Serializer returns userprofile info from current user"""
+
+    class Meta:
+        model = UserProfile
+        fields = '__all__'
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     """Serializer for CRUD operations"""

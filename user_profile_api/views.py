@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
-from .serializers import CurrentUserSerializer, UpdateUserSerializer
+from .serializers import CurrentUserSerializer, UpdateUserSerializer, UserProfileSerializer
 from rest_framework.response import Response
 from rest_framework import status
+from .models import UserProfile
 
 
 class CurrentUserView(APIView):
@@ -14,8 +15,16 @@ class CurrentUserView(APIView):
 		serializer = CurrentUserSerializer(request.user)
 		return Response(serializer.data)
 	
+class UserProfileView(APIView):
+	"""Handles the request for userprofile data"""
 
-class UpdateOrDeleteCurrentUser(APIView):
+	def get(self, request):
+		print('Helloworld')
+		user_profile = UserProfile.objects.get(user_id=request.user.id)
+		serializer = UserProfileSerializer(user_profile)
+		return Response(serializer.data)
+
+class UpdateOrDeleteCurrentUserView(APIView):
 	"""
 	CRUD operations on UserProfile
 	"""
