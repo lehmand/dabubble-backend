@@ -35,3 +35,18 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    """Serializer for CRUD operations on profile from current user"""
+    
+    class Meta:
+        model = UserProfile
+        fields = '__all__'
+
+    def update(self, instance, validated_data):
+        """Update logic for userprofile of current user"""
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
