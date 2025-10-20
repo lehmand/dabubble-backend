@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from .serializers import CurrentUserSerializer, UpdateOrDeleteCurrentUserSerializer
+from .serializers import CurrentUserSerializer, UpdateUserSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -25,7 +25,7 @@ class UpdateOrDeleteCurrentUser(APIView):
 		Updates own user profile
 		"""
 
-		serializer = UpdateOrDeleteCurrentUserSerializer(request.user, data=request.data, partial=True)
+		serializer = UpdateUserSerializer(request.user, data=request.data, partial=True)
 		if serializer.is_valid():
 			serializer.save()
 			return Response(serializer.data)
