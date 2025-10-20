@@ -9,14 +9,14 @@ class CurrentUserSerializer(serializers.ModelSerializer):
     """Serializer returns UserProfile"""
 
     class Meta:
-        model = UserProfile
+        model = User
         fields = '__all__'
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     """Serializer for CRUD operations"""
 
     class Meta:
-        model = UserProfile
+        model = User
         fields = '__all__'
 
     def update(self, instance, validated_data):
