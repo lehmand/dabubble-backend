@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'auth_api',
-    'user_profile_api',
+    'auth_api.apps.AuthApiConfig',
+    'user_profile_api.apps.UserProfileApiConfig',
 ]
 
 MIDDLEWARE = [
