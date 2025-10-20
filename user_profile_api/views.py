@@ -9,7 +9,7 @@ class CurrentUserView(APIView):
 	Handles the request for the User object
 	"""
 
-	def post(self, request):
+	def get(self, request):
 		
 		serializer = CurrentUserSerializer(request.user)
 		return Response(serializer.data)
