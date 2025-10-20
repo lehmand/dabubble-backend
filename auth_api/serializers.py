@@ -44,14 +44,11 @@ class RegistrationSerializer(serializers.ModelSerializer):
         name_parts = validated_data['name'].strip().split()
         first_name = name_parts[0]
         last_name = ' '.join(name_parts[1:]) if len(name_parts) > 1 else ''
-        username = validated_data.get('email').split('@')[0]
+        validated_data.pop('name')
 
-        user = User(
-            username = username,
-            first_name = first_name,
-            last_name = last_name,
-            email = validated_data['email'],
-        )
-        user.set_password(password)
-        user.save()
+        user = User.objects.create_user(
+            password=password, 
+            first_name=first_name,
+            last_name=last_name,
+            **validated_data)
         return user

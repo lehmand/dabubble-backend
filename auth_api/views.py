@@ -9,6 +9,7 @@ from django.contrib.auth.tokens import default_token_generator
 from .utils import create_activation_link, send_activation_email
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from user_profile_api.models import UserProfile
 
 User = get_user_model()
 
@@ -45,8 +46,9 @@ class ActivationView(APIView):
 		}
 
 		if user is not None and default_token_generator.check_token(user, token):
-			user.is_activated = True
-			user.save()
+			userprofile = UserProfile.objects.get(user_id=user.pk)
+			userprofile.is_activated = True
+			userprofile.save()
 
 			return render(request, 'auth_api/redirect_pages/activation_success.html', success_context)
 		else:
