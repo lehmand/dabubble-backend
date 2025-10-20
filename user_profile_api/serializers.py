@@ -12,12 +12,13 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'first_name', 'last_name', 'email']
 
+
 class UpdateUserSerializer(serializers.ModelSerializer):
     """Serializer for CRUD operations"""
 
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['id', 'first_name', 'last_name', 'email']
 
     def update(self, instance, validated_data):
         """Updates the current user profile object"""
