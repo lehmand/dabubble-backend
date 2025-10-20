@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from .serializers import CurrentUserSerializer, UpdateUserSerializer, UserProfileSerializer
+from .serializers import CurrentUserSerializer, UpdateUserSerializer, UserProfileSerializer, UpdateProfileSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from .models import UserProfile
@@ -22,6 +22,17 @@ class UserProfileView(APIView):
 		user_profile = UserProfile.objects.get(user_id=request.user.id)
 		serializer = UserProfileSerializer(user_profile)
 		return Response(serializer.data)
+
+class UpdateProfileView(APIView):
+	"""Update view for the userprofile of currentuser"""
+	
+	def patch(self, request):
+		serializer = UpdateProfileSerializer(request.user, data=request.data, partial=True)
+
+		if serializer.is_valid():
+			serializer.save()
+			return Response(serializer.data, status=status.HTTP_200_OK)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class UpdateOrDeleteCurrentUserView(APIView):
 	"""

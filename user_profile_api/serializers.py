@@ -41,7 +41,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserProfile
-        fields = '__all__'
+        fields = ['avatar_url']
 
     def update(self, instance, validated_data):
         """Update logic for userprofile of current user"""
