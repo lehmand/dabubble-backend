@@ -38,7 +38,7 @@ class CustomAuthManager(BaseUserManager):
 class User(AbstractUser):
     """
     Custom user model
-    removed username because email is the login field.
+    removed username email login.
     Added custom manager
     """
 
