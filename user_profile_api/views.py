@@ -25,7 +25,8 @@ class UpdateProfileView(APIView):
 	"""Update view for the userprofile of currentuser"""
 	
 	def patch(self, request):
-		serializer = UpdateProfileSerializer(request.user, data=request.data, partial=True)
+		profile = UserProfile.objects.get(user_id=request.user.id)
+		serializer = UpdateProfileSerializer(profile, data=request.data, partial=True)
 
 		if serializer.is_valid():
 			serializer.save()

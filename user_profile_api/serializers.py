@@ -18,7 +18,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = '__all__'
+        exclude = ['is_activated', 'user']
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     """Serializer for CRUD operations"""

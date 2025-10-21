@@ -10,12 +10,15 @@ from .utils import create_activation_link, send_activation_email
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from user_profile_api.models import UserProfile
+from rest_framework.permissions import AllowAny
 
 User = get_user_model()
 
 # Create your views here.
 class RegistrationView(APIView):
 	"""Handles the registration post request"""
+
+	permission_classes = [AllowAny]
 
 	def post(self, request):
 		
@@ -31,6 +34,8 @@ class RegistrationView(APIView):
 	
 class ActivationView(APIView):
 	"""Handles the account activation process"""
+
+	permission_classes = [AllowAny]
 
 	def get(self, request, uidb64, token):
 
@@ -57,7 +62,7 @@ class ActivationView(APIView):
 
 class CookieTokenObtainPairView(TokenObtainPairView):
 	"""Customized View to set cookies for the access and refresh tokens"""
-	
+
 	serializer_class = TokenObtainPairSerializer
 
 	def post(self, request, *args, **kwargs):
