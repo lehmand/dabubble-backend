@@ -51,3 +51,19 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+class NestedProfileInfoSerializer(serializers.ModelSerializer):
+    """Displays profile infos for user serializer"""
+
+    class Meta:
+        model = UserProfile
+        exclude = ['user', 'is_activated', 'id']
+
+class UserListSerializer(serializers.ModelSerializer):
+    """Displays all users with userprofile infos"""
+
+    user_profile = NestedProfileInfoSerializer()
+
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'user_profile']

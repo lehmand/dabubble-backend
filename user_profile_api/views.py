@@ -1,10 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 from .models import UserProfile
-from .serializers import CurrentUserSerializer, UpdateUserSerializer, UserProfileSerializer, UpdateProfileSerializer
+from .serializers import CurrentUserSerializer, UpdateUserSerializer, UserProfileSerializer, UpdateProfileSerializer, UserListSerializer
 from .permissions import IsOwner, IsActivated
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class CurrentUserView(APIView):
@@ -62,3 +65,13 @@ class UpdateOrDeleteCurrentUserView(APIView):
 		user.delete()
 
 		return Response(status=status.HTTP_204_NO_CONTENT)
+
+class UserListView(APIView):
+	"""List view of all users"""
+
+	permission_classes = [IsAuthenticated, IsActivated]
+
+	def get(self, request):
+		queryset = User.objects.all()
+		serializer = UserListSerializer(queryset, many=True)
+		return Response(serializer.data)
