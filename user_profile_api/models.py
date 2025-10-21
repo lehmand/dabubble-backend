@@ -5,6 +5,8 @@ from django.utils import timezone
 # Create your models here.
 
 class UserProfile(models.Model):
+    """Userprofile extending User Model with additional infos"""
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

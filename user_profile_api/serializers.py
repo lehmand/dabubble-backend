@@ -41,10 +41,11 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserProfile
-        fields = ['avatar_url']
+        fields = ['avatar_url', 'bio']
 
     def update(self, instance, validated_data):
         """Update logic for userprofile of current user"""
+        
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 

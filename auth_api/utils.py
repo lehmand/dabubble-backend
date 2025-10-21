@@ -16,6 +16,7 @@ def create_activation_link(user):
 
 def send_activation_email(email, first_name, activation_link):
     """Creates an email and sends it to the registered user"""
+
     subject = 'Activate your account'
     from_email = 'no-replay@dabubble.de'
     to = [email]
@@ -25,7 +26,5 @@ def send_activation_email(email, first_name, activation_link):
     }
 
     body = render_to_string('auth_api/emails/confirm_email.html', context)
-
-
     msg = EmailMessage(subject, body, from_email, to)
     msg.send()

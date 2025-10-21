@@ -57,11 +57,11 @@ class ActivationView(APIView):
 
 class CookieTokenObtainPairView(TokenObtainPairView):
 	"""Customized View to set cookies for the access and refresh tokens"""
+	
 	serializer_class = TokenObtainPairSerializer
 
 	def post(self, request, *args, **kwargs):
 		response = super().post(request, *args, **kwargs)
-
 		token_data = response.data
 		access_token = token_data.get('access')
 		refresh_token = token_data.get('refresh')
@@ -85,11 +85,12 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 		return response
 	
 class CookieTokenRefreshView(TokenRefreshView):
+	"""Serializer to get new access token from refresh token"""
+
 	serializer_class = TokenRefreshSerializer
 
 	def post(self, request, *args, **kwargs):
 		response = super().post(request, *args, **kwargs)
-
 		token_data = response.data
 		access_token = token_data.get('access')
 

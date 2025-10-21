@@ -5,9 +5,11 @@ from user_profile_api.models import UserProfile
 
 class CustomAuthManager(BaseUserManager):
     """
-    Custom UserManager for creating a UserProfile after
-    creating a User.
+    Custom usermanager for creating a user.
+    Overwritten create_user and create_superuser to create a
+    userprofile after creating a user.
     """
+
     def _after_create_user(self, user):
         if user is None:
             raise ValueError('No user found')
@@ -46,6 +48,12 @@ class CustomAuthManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 class User(AbstractUser):
+    """
+    Custom user model
+    removed username because email is the login field.
+    Added custom manager
+    """
+
     username = None
     email = models.EmailField(unique=True)
 
