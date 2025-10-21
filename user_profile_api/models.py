@@ -15,7 +15,7 @@ class UserProfile(models.Model):
     avatar_url = models.URLField(blank=True, null=True)
     last_seen = models.DateTimeField(default=timezone.now)
     is_activated = models.BooleanField(default=False)
-    bio = models.TextField(max_length=500, blank=True)
+    bio = models.TextField(max_length=500, default='Write something about yourself...')
 
     def __str__(self):
         return f"{self.user}"

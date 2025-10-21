@@ -11,7 +11,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email']
+        fields = ['id', 'first_name', 'last_name']
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """Serializer returns userprofile info from current user"""
@@ -25,7 +25,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email']
+        fields = ['id', 'first_name', 'last_name']
 
     def update(self, instance, validated_data):
         """Updates the current user profile object"""
@@ -45,7 +45,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """Update logic for userprofile of current user"""
-        
+
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
