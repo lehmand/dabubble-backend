@@ -1,12 +1,16 @@
 from rest_framework.views import APIView
-from .serializers import CurrentUserSerializer, UpdateUserSerializer, UserProfileSerializer, UpdateProfileSerializer
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 from .models import UserProfile
+from .serializers import CurrentUserSerializer, UpdateUserSerializer, UserProfileSerializer, UpdateProfileSerializer
+from .permissions import IsOwner, IsActivated
 
 
 class CurrentUserView(APIView):
 	"""Handles the request for the User object"""
+
+	permission_classes = [IsAuthenticated, IsActivated]
 
 	def get(self, request):
 		
@@ -16,6 +20,8 @@ class CurrentUserView(APIView):
 class UserProfileView(APIView):
 	"""Handles the request for userprofile data"""
 
+	permission_classes = [IsAuthenticated, IsActivated]
+
 	def get(self, request):
 		user_profile = UserProfile.objects.get(user_id=request.user.id)
 		serializer = UserProfileSerializer(user_profile)
@@ -23,6 +29,8 @@ class UserProfileView(APIView):
 
 class UpdateProfileView(APIView):
 	"""Update view for the userprofile of currentuser"""
+
+	permission_classes = [IsAuthenticated, IsOwner, IsActivated]
 	
 	def patch(self, request):
 		profile = UserProfile.objects.get(user_id=request.user.id)
@@ -35,6 +43,8 @@ class UpdateProfileView(APIView):
 
 class UpdateOrDeleteCurrentUserView(APIView):
 	"""CRUD operations on UserProfile"""
+
+	permission_classes = [IsAuthenticated, IsOwner, IsActivated]
 
 	def patch(self, request):
 		"""Updates own user profile"""

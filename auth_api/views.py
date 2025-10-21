@@ -10,7 +10,7 @@ from .utils import create_activation_link, send_activation_email
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from user_profile_api.models import UserProfile
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 User = get_user_model()
 
@@ -63,10 +63,22 @@ class ActivationView(APIView):
 class CookieTokenObtainPairView(TokenObtainPairView):
 	"""Customized View to set cookies for the access and refresh tokens"""
 
+	permission_classes = [AllowAny]
 	serializer_class = TokenObtainPairSerializer
 
 	def post(self, request, *args, **kwargs):
 		response = super().post(request, *args, **kwargs)
+
+		email = request.data.get('email')
+		try:
+			user = User.objects.get(email=email)
+			if not user.user_profile.is_activated:
+				return Response({
+					'detail': 'Account not activated, please check your email.'
+				}, status=status.HTTP_403_FORBIDDEN)
+		except (User.DoesNotExist, UserProfile.DoesNotExist):
+			pass
+
 		token_data = response.data
 		access_token = token_data.get('access')
 		refresh_token = token_data.get('refresh')
@@ -91,6 +103,8 @@ class CookieTokenObtainPairView(TokenObtainPairView):
 	
 class CookieTokenRefreshView(TokenRefreshView):
 	"""Serializer to get new access token from refresh token"""
+
+	permission_classes = [AllowAny]
 
 	serializer_class = TokenRefreshSerializer
 
