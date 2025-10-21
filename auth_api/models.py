@@ -4,18 +4,7 @@ from user_profile_api.models import UserProfile
 # Create your models here.
 
 class CustomAuthManager(BaseUserManager):
-    """
-    Custom usermanager for creating a user.
-    Overwritten create_user and create_superuser to create a
-    userprofile after creating a user.
-    """
-
-    def _after_create_user(self, user):
-        if user is None:
-            raise ValueError('No user found')
-        
-        user_profile = UserProfile.objects.get_or_create(user=user)
-        return user_profile
+    """Custom usermanager for email base authentication"""
 
     def _create_user(self, email, password, **extra_fields):
         if not email:
@@ -26,7 +15,6 @@ class CustomAuthManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self.db)
 
-        self._after_create_user(user)
         return user
 
     def create_user(self, email=None, password=None, **extra_fields):
