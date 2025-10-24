@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Channel
+from .models import Channel, ChannelMembership
 
 # Register your models here.
 @admin.register(Channel)
