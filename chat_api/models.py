@@ -21,14 +21,14 @@ class Channel(models.Model):
 
     class Meta:
         ordering = ['name']
-
         indexes = [
-            models.Index(fields=['name'])
-        ]
-
+            models.Index(fields=[
+                'name'])
+                ]
 
     def __str__(self):
         return f"Channel {self.name} created by {self.created_by}"
+
 
 class ChannelMembership(models.Model):
     channel = models.ForeignKey(
@@ -49,6 +49,7 @@ class ChannelMembership(models.Model):
     def __str__(self):
         return f"User {self.user} joined {self.channel} at {self.joined_at}"
 
+
 class Message(models.Model):
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -58,5 +59,19 @@ class Message(models.Model):
     text = models.TextField(blank=False, max_length=500)
     sent_at = models.DateTimeField(auto_now_add=True)
     is_edited = models.BooleanField(default=False)
-    edited_at = models.DateTimeField(auto_now_add=True)
+    edited_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    channel = models.ForeignKey(
+        Channel,
+        on_delete=models.CASCADE,
+        related_name='messages',
+        null=True,
+        blank=True
+    )
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.sender.first_name} sent a message to {self.channel.name}"
     
