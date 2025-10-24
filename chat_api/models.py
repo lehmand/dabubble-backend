@@ -57,4 +57,6 @@ class Message(models.Model):
     )
     text = models.TextField(blank=False, max_length=500)
     sent_at = models.DateTimeField(auto_now_add=True)
+    is_edited = models.BooleanField(default=False)
+    edited_at = models.DateTimeField(auto_now_add=True)
     

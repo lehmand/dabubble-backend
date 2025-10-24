@@ -53,7 +53,7 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
         return instance
 
 class NestedProfileInfoSerializer(serializers.ModelSerializer):
-    """Displays profile infos for user serializer"""
+    """Displays profile infos of user serializer"""
 
     class Meta:
         model = UserProfile
