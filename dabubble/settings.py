@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'auth_api.apps.AuthApiConfig',
     'user_profile_api.apps.UserProfileApiConfig',
+    'chat_api.apps.ChatApiConfig',
     'drf_spectacular',
 ]
 

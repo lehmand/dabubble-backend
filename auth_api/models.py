@@ -50,5 +50,12 @@ class User(AbstractUser):
 
     objects = CustomAuthManager()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['first_name', 'last_name'])
+        ]
+
+        ordering = ['first_name']
+
     def __str__(self):
 	    return f"{self.email}"
