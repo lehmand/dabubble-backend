@@ -18,6 +18,7 @@ class UserProfile(models.Model):
     last_seen = models.DateTimeField(default=timezone.now)
     is_activated = models.BooleanField(default=False)
     bio = models.TextField(max_length=500, default='Write something about yourself...')
+    is_guest = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user}"
