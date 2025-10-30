@@ -33,7 +33,7 @@ class Channel(models.Model):
         super().save(*args, **kwargs)
 
         if is_new and self.created_by:
-            ChannelMembership.get_or_create(
+            ChannelMembership.objects.get_or_create(
                 channel=self,
                 user=self.created_by,
                 defaults={'role': 'admin'}
