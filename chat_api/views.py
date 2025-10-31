@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializers import BasicChannelListSerializer, CreateChannelSerializer
+from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer
 from .models import Channel
 
 # Create your views here.
@@ -31,4 +31,23 @@ class BasicChannelListView(APIView):
         all_channels = Channel.objects.all()
         serializer = BasicChannelListSerializer(all_channels, many=True)
 
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class DetailChannelView(APIView):
+    """CRUD for detail channel view"""
+
+    def get(self, request, pk):
+        try:
+            channel = Channel.objects.prefetch_related(
+                'members__user_profile',
+                'created_by__user_profile'
+            ).get(pk=pk)
+        except Channel.DoesNotExist:
+            return Response(
+                {'message': 'Channel not found'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = DetailChannelSerializer(channel)
         return Response(serializer.data, status=status.HTTP_200_OK)
