@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer
-from .models import Channel
+from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer
+from .models import Channel, ChannelMembership
 
 # Create your views here.
 
@@ -75,4 +75,42 @@ class DetailChannelView(APIView):
 
 
 class UpdateChannelMemberView(APIView):
-    pass
+    """Adds or removes members from channel"""
+
+    def post(self, request, pk):
+        try:
+            channel = Channel.objects.get(pk=pk)
+        except Channel.DoesNotExist:
+            return Response('Channel not found!', status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = ManageChannelMemberSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        user_ids = serializer.validated_data['user_ids']
+        action = serializer.validated_data['action']
+
+        if action == 'add':
+            added_count = 0
+            for user_id in user_ids:
+                _, created = ChannelMembership.objects.get_or_create(
+                    channel=channel,
+                    user_id=user_id
+                )
+                if created:
+                    added_count +=1
+                return Response({
+                    'message': f'Added {added_count} members to channel.',
+                    'channel_id': channel.id
+                }, status=status.HTTP_200_OK)
+
+        elif action == 'remove':
+            removed_counter = ChannelMembership.objects.filter(
+                channel=channel,
+                user_id__in=user_ids
+            ).delete()[0]
+
+            return Response({
+                'message': f'{removed_counter} members removed from channel',
+                'channel_id': channel.id
+            }, status=status.HTTP_200_OK)
