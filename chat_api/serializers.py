@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from rest_framework.serializers import raise_errors_on_nested_writes
+from rest_framework.utils import model_meta
 from .models import Channel
 from user_profile_api.serializers import NestedProfileInfoSerializer
 from django.contrib.auth import get_user_model
@@ -14,6 +16,7 @@ class CreateChannelSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'description': {'required': False}
         }
+      
 
 class BasicChannelListSerializer(serializers.ModelSerializer):
     """Serializer for basic channel list"""
@@ -42,3 +45,31 @@ class DetailChannelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Channel
         fields = ['id', 'name', 'description', 'created_at', 'created_by', 'members']
+
+
+
+class ManageChannelMemberSerializer(serializers.Serializer):
+    """Adds and remove channel members"""
+
+    user_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        required=True
+    )
+
+    action = serializers.ChoiceField(
+        choices=['add', 'remove'],
+        required=True
+    )
+
+    def validate_user_ids(self, value):
+        """Checks if all ids exists"""
+        if not value:
+            raise serializers.ValidationError('At least one id must be given.')
+
+        existing_ids = User.objects.filter(id__in=value).values_list('id', flat=True)
+        missing_ids = set(value) - set(existing_ids)
+
+        if missing_ids:
+            raise serializers.ValidationError(f"Users with the ids {missing_ids} does not exist.")
+
+        return value
