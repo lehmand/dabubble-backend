@@ -99,10 +99,10 @@ class UpdateChannelMemberView(APIView):
                 )
                 if created:
                     added_count +=1
-                return Response({
-                    'message': f'Added {added_count} members to channel.',
-                    'channel_id': channel.id
-                }, status=status.HTTP_200_OK)
+            return Response({
+                'message': f'Added {added_count} members to channel.',
+                'channel_id': channel.id
+            }, status=status.HTTP_200_OK)
 
         elif action == 'remove':
             removed_counter = ChannelMembership.objects.filter(
