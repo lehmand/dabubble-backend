@@ -38,6 +38,7 @@ class DetailChannelView(APIView):
     """CRUD for detail channel view"""
 
     def get(self, request, pk):
+        """Get all data to display channel with members and messages"""
         try:
             channel = Channel.objects.prefetch_related(
                 'members__user_profile',
@@ -53,6 +54,7 @@ class DetailChannelView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request, pk):
+        """Patch the channel name and/or description"""
         try:
             channel = Channel.objects.get(pk=pk)
         except Channel.DoesNotExist:
@@ -64,7 +66,11 @@ class DetailChannelView(APIView):
         serializer = DetailChannelSerializer(channel, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({
+                'id': channel.id,
+                'name': channel.name,
+                'description': channel.description
+            })
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
