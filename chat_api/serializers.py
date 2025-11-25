@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.utils import model_meta
-from .models import Channel
+from .models import Channel, Message
 from user_profile_api.serializers import NestedProfileInfoSerializer
 from django.contrib.auth import get_user_model
 
@@ -47,7 +47,6 @@ class DetailChannelSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description', 'created_at', 'created_by', 'members']
 
 
-
 class ManageChannelMemberSerializer(serializers.Serializer):
     """Adds and remove channel members"""
 
@@ -73,3 +72,27 @@ class ManageChannelMemberSerializer(serializers.Serializer):
             raise serializers.ValidationError(f"Users with the ids {missing_ids} does not exist.")
 
         return value
+
+
+class ChannelMessageSerializer(serializers.ModelSerializer):
+    """Serializer for posting channel messages"""
+    class Meta:
+        model = Message
+        fields = ['id', 'text', 'created_at'] 
+        read_only_fields = ['id', 'created_at']
+
+
+class DirectMessageSerializer(serializers.ModelSerializer):
+    """Serializer for posting DMs"""
+    class Meta:
+        model = Message
+        fields = ['id', 'text', 'created_at']
+        read_only_fields = ['id', 'created_at']
+
+
+class ThreadMessageSerializer(serializers.ModelSerializer):
+    """Serializer for posting thread messages"""
+    class Meta:
+        model = Message
+        fields = ['id', 'text', 'created_at']
+        read_only_fields = ['id', 'created_at']

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer
+from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer, ChannelMessageSerializer
 from .models import Channel, ChannelMembership
 
 # Create your views here.
@@ -114,3 +114,20 @@ class UpdateChannelMemberView(APIView):
                 'message': f'{removed_counter} members removed from channel',
                 'channel_id': channel.id
             }, status=status.HTTP_200_OK)
+
+
+class CreateChannelMessageView(APIView):
+    """
+    Channel message view for
+    posting, deleting and editing channel messages
+    """
+    def post(self, request, pk):
+        """Handler for posting channel messages"""
+        serializer = ChannelMessageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(
+                    sender=request.user,
+                    channel_id=pk
+                    )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
