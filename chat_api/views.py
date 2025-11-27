@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer, ChannelMessageSerializer, EditChannelMessageSerializer
 from .models import Channel, ChannelMembership, Message
-import datetime
+from .permissions import IsOwner
 
 # Create your views here.
 
@@ -136,8 +136,14 @@ class ChannelMessageView(APIView):
 
 class EditChannelMessage(APIView):
     """View for editing and delete messages"""
+
+    permission_classes = [IsOwner]
+
     def patch(self, request, pk):
         message = Message.objects.get(pk=pk)
+
+        self.check_object_permissions(request, message)
+
         serializer = EditChannelMessageSerializer(message, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -145,8 +151,9 @@ class EditChannelMessage(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     
-    def delete(self, pk):
+    def delete(self, request, pk):
         """Deletes channel message"""
         message = Message.objects.get(pk=pk)
+        self.check_object_permissions(request, message)
         message.delete()
-        return Response({'message': 'Message deleted!'})
+        return Response(status=status.HTTP_204_NO_CONTENT)
