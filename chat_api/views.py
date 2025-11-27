@@ -2,8 +2,9 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer, ChannelMessageSerializer
-from .models import Channel, ChannelMembership
+from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer, ChannelMessageSerializer, EditChannelMessageSerializer
+from .models import Channel, ChannelMembership, Message
+import datetime
 
 # Create your views here.
 
@@ -116,7 +117,7 @@ class UpdateChannelMemberView(APIView):
             }, status=status.HTTP_200_OK)
 
 
-class CreateChannelMessageView(APIView):
+class ChannelMessageView(APIView):
     """
     Channel message view for
     posting, deleting and editing channel messages
@@ -131,3 +132,21 @@ class CreateChannelMessageView(APIView):
                     )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EditChannelMessage(APIView):
+    """View for editing and delete messages"""
+    def patch(self, request, pk):
+        message = Message.objects.get(pk=pk)
+        serializer = EditChannelMessageSerializer(message, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+    def delete(self, pk):
+        """Deletes channel message"""
+        message = Message.objects.get(pk=pk)
+        message.delete()
+        return Response({'message': 'Message deleted!'})

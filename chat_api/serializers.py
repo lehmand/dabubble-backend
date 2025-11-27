@@ -4,6 +4,7 @@ from rest_framework.utils import model_meta
 from .models import Channel, Message
 from user_profile_api.serializers import NestedProfileInfoSerializer
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -96,3 +97,18 @@ class ThreadMessageSerializer(serializers.ModelSerializer):
         model = Message
         fields = ['id', 'text', 'created_at']
         read_only_fields = ['id', 'created_at']
+
+
+class EditChannelMessageSerializer(serializers.ModelSerializer):
+    """Edit channel messages"""
+    class Meta:
+        model = Message
+        fields = ['id', 'text', 'is_edited', 'edited_at']
+        read_only_field = ['is_edited', 'edited_at']
+
+    def update(self, instance, validated_data):
+        instance.text = validated_data.get('text', instance.text)         
+        instance.is_edited = True
+        instance.edited_at = timezone.now()
+        instance.save()
+        return instance
