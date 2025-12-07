@@ -164,6 +164,14 @@ class GetOrCreateDmConversationView(APIView):
 
     def get(self, request, user_id):
         from django.db.models import Q
+        from django.contrib.auth import get_user_model
+
+        User = get_user_model()
+
+        try:
+            other_user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return Response({'message': 'User does not exist'}, status=status.HTTP_404_NOT_FOUND)
 
         if request.user.id == user_id:
             dm_conversation = DMConversation.objects.filter(
@@ -186,29 +194,29 @@ class GetOrCreateDmConversationView(APIView):
             if not dm_conversation:
                 dm_conversation = DMConversation.objects.create(
                         user_1=request.user,
-                        user_2=user_id
+                        user_2=other_user
                         )
 
         serializer = DetailDMConversationSerializer(dm_conversation)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-    class DMMessageView(APIView):
+class DMMessageView(APIView):
         
-        def post(self, request, dm_converstation_id):
-            try:
-                dm_conversation = DMConversation.objects.get(pk=dm_converstation_id)
-            except DMConversation.DoesNotExist:
-                return Response({'message': 'dm conversation not found'}, status=status.HTTP_404_NOT_FOUND)
+    def post(self, request, dm_conversation_id):
+        try:
+            dm_conversation = DMConversation.objects.get(pk=dm_conversation_id)
+        except DMConversation.DoesNotExist:
+            return Response({'message': 'dm conversation not found'}, status=status.HTTP_404_NOT_FOUND)
 
-            if request.user not in [dm_conversation.user_1, dm_conversation.user_2]:
-                return Response({'message': 'Your are not part of this conversation'}, status=status.HTTP_403_FORBIDDEN)
+        if request.user not in [dm_conversation.user_1, dm_conversation.user_2]:
+            return Response({'message': 'Your are not part of this conversation'}, status=status.HTTP_403_FORBIDDEN)
 
-            serializer = DMMessageSerialzer(data=request.data)
-            if serializer.is_valid():
-                serializer.save(
-                        sender=request.user,
-                        dm_conversation=dm_conversation
-                        )
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status.status.HTTP_400_BAD_REQUEST)
+        serializer = DMMessageSerialzer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(
+                    sender=request.user,
+                    dm_conversation=dm_conversation
+                    )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.status.HTTP_400_BAD_REQUEST)
