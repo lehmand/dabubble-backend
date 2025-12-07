@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import BasicChannelListView, CreateChannelView, DetailChannelView, UpdateChannelMemberView, ChannelMessageView, EditChannelMessage
+from .views import BasicChannelListView, CreateChannelView, DetailChannelView, UpdateChannelMemberView, ChannelMessageView, EditChannelMessage, GetOrCreateDmConversationView
 
 urlpatterns = [
     path('channels/basic-channel-list/', BasicChannelListView.as_view(), name='basic-channel-list'),
@@ -8,4 +8,6 @@ urlpatterns = [
     path('channels/<int:pk>/members/', UpdateChannelMemberView.as_view(), name='update-members'),
     path('channels/<int:pk>/messages/', ChannelMessageView.as_view(), name='create-channel-message'),
     path('message/<int:pk>/', EditChannelMessage.as_view(), name='edit-channel-message'),
+    path('dm/<int:user_id>/', GetOrCreateDmConversationView.as_view(), name='get-or-create-dm-conv'),
+    path('dm/<int:dm_converation_id/messages/', DMMessageView.as_view(), name='post-dm-message'),
 ]

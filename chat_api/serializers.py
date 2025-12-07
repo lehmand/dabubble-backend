@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.utils import model_meta
-from .models import Channel, Message
+from .models import Channel, DMConversation, Message
 from user_profile_api.serializers import NestedProfileInfoSerializer
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -83,14 +83,6 @@ class ChannelMessageSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 
 
-class DirectMessageSerializer(serializers.ModelSerializer):
-    """Serializer for posting DMs"""
-    class Meta:
-        model = Message
-        fields = ['id', 'text', 'created_at']
-        read_only_fields = ['id', 'created_at']
-
-
 class ThreadMessageSerializer(serializers.ModelSerializer):
     """Serializer for posting thread messages"""
     class Meta:
@@ -112,3 +104,24 @@ class EditChannelMessageSerializer(serializers.ModelSerializer):
         instance.edited_at = timezone.now()
         instance.save()
         return instance
+
+
+class DMMessageSerialzer(serializers.ModelSerializer):
+
+    sender = serializers.PrimaryKeyRelatedField(read_only=True)
+    sender_name = serializers.CharField(source='sender.first_name', read_only=True)
+    class Meta:
+        model = Message
+        fields = ['id', 'sender', 'sender_name', 'text', 'created_at', 'is_edited', 'edited_at']
+
+
+
+class DetailDMConversationSerializer(serializers.ModelSerializer):
+
+    messages = DMMessageSerialzer(many=True, read_only=True)
+    user_1_info = ChannelMemberSerializer(source='user_1', read_only=True)
+    user_2_info = ChannelMemberSerializer(source='user_2', read_only=True)
+
+    class Meta:
+        model = DMConversation
+        fields = ['id', 'user_1_info', 'user_2_info', 'created_at', 'messages']

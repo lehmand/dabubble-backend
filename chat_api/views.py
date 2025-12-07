@@ -2,8 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer, ChannelMessageSerializer, EditChannelMessageSerializer
-from .models import Channel, ChannelMembership, Message
+from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer, ChannelMessageSerializer, EditChannelMessageSerializer, DetailDMConversationSerializer, DMMessageSerialzer
+from .models import Channel, ChannelMembership, Message, DMConversation
 from .permissions import IsOwner
 
 # Create your views here.
@@ -157,3 +157,58 @@ class EditChannelMessage(APIView):
         self.check_object_permissions(request, message)
         message.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class GetOrCreateDmConversationView(APIView):
+    """Get an existing DM conversation or create one"""
+
+    def get(self, request, user_id):
+        from django.db.models import Q
+
+        if request.user.id == user_id:
+            dm_conversation = DMConversation.objects.filter(
+                    user_1=request.user,
+                    user_2=request.user
+                    ).first()
+
+            if not dm_conversation:
+                dm_conversation = DMConversation.objects.create(
+                        user_1=request.user,
+                        user_2=request.user
+                        )
+
+        else:
+            dm_conversation = DMConversation.objects.filter(
+                    Q(user_1=request.user, user_2=user_id) |
+                    Q(user_2=user_id, user_1=request.user)
+                    ).first()
+
+            if not dm_conversation:
+                dm_conversation = DMConversation.objects.create(
+                        user_1=request.user,
+                        user_2=user_id
+                        )
+
+        serializer = DetailDMConversationSerializer(dm_conversation)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+    class DMMessageView(APIView):
+        
+        def post(self, request, dm_converstation_id):
+            try:
+                dm_conversation = DMConversation.objects.get(pk=dm_converstation_id)
+            except DMConversation.DoesNotExist:
+                return Response({'message': 'dm conversation not found'}, status=status.HTTP_404_NOT_FOUND)
+
+            if request.user not in [dm_conversation.user_1, dm_conversation.user_2]:
+                return Response({'message': 'Your are not part of this conversation'}, status=status.HTTP_403_FORBIDDEN)
+
+            serializer = DMMessageSerialzer(data=request.data)
+            if serializer.is_valid():
+                serializer.save(
+                        sender=request.user,
+                        dm_conversation=dm_conversation
+                        )
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status.status.HTTP_400_BAD_REQUEST)
