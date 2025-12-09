@@ -77,9 +77,10 @@ class ManageChannelMemberSerializer(serializers.Serializer):
 
 class ChannelMessageSerializer(serializers.ModelSerializer):
     """Serializer for posting channel messages"""
+    sender = ChannelMemberSerializer(read_only=True)
     class Meta:
         model = Message
-        fields = ['id', 'text', 'created_at'] 
+        fields = ['id', 'sender', 'text', 'created_at'] 
         read_only_fields = ['id', 'created_at']
 
 
@@ -106,13 +107,20 @@ class EditChannelMessageSerializer(serializers.ModelSerializer):
         return instance
 
 
+
 class DMMessageSerialzer(serializers.ModelSerializer):
 
-    sender = serializers.PrimaryKeyRelatedField(read_only=True)
-    sender_name = serializers.CharField(source='sender.first_name', read_only=True)
+    sender = ChannelMemberSerializer(read_only=True)
     class Meta:
         model = Message
-        fields = ['id', 'sender', 'sender_name', 'text', 'created_at', 'is_edited', 'edited_at']
+        fields = ['id', 'sender', 'text', 'created_at', 'is_edited', 'edited_at']
+
+    def update(self, instance, validated_data):
+        instance.text = validated_data.get('text', instance.text)
+        instance.is_edited = True
+        instance.edited_at = timezone.now()
+        instance.save()
+        return instance
 
 
 

@@ -132,6 +132,12 @@ class ChannelMessageView(APIView):
                     )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request, pk):
+        """Get all channel messages"""
+        messages = Message.objects.filter(channel_id=pk).order_by('created_at')
+        serializer = ChannelMessageSerializer(messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class EditChannelMessage(APIView):
@@ -202,8 +208,10 @@ class GetOrCreateDmConversationView(APIView):
 
 
 class DMMessageView(APIView):
+    """Methods for posting, editing and deleting dm messages"""
         
     def post(self, request, dm_conversation_id):
+        """Method for creating dm messages"""
         try:
             dm_conversation = DMConversation.objects.get(pk=dm_conversation_id)
         except DMConversation.DoesNotExist:
@@ -220,3 +228,32 @@ class DMMessageView(APIView):
                     )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status.status.HTTP_400_BAD_REQUEST)
+
+
+class EditDMMessage(APIView):
+    """Delete and editing dm messages"""
+    permission_classes = [IsOwner]
+    def patch(self, request, pk):
+        """Editing DM messages"""
+        try:
+            message = Message.objects.get(pk=pk)
+        except Message.DoesNotExist:
+            return Response({'message': 'message not found'})
+
+        self.check_object_permissions(request, message)
+        serializer = DMMessageSerialzer(message, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, pk):
+        """Deleting DM messages"""
+        try:
+            message = Message.objects.get(pk=pk)
+        except Message.DoesNotExist:
+            return Response({'message': 'message not found'})
+
+        self.check_object_permissions(request, message)
+        message.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
