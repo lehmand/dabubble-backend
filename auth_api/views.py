@@ -11,6 +11,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, Toke
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from user_profile_api.models import UserProfile
 from rest_framework.permissions import AllowAny, IsAuthenticated
+import uuid
+
 
 User = get_user_model()
 
@@ -123,3 +125,48 @@ class CookieTokenRefreshView(TokenRefreshView):
 
 		return response
 
+
+class CreateGuestView(APIView):
+    """Creates a guest account with auto-activation"""
+    
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    
+    def post(self, request):
+        guest_uuid = uuid.uuid4().hex
+        
+        first_name = 'Guest'
+        last_name = guest_uuid[:5]
+        email = f'guest_{guest_uuid[:10]}@guest.com'
+        password = uuid.uuid4().hex
+        
+        try:
+            user = User.objects.create_user(
+                email=email,
+                password=password,
+                first_name=first_name,
+                last_name=last_name
+            )
+            
+            user_profile = UserProfile.objects.get(user=user)
+            user_profile.is_activated = True
+            user_profile.is_guest = True
+            user_profile.save()
+            
+            from rest_framework_simplejwt.tokens import RefreshToken
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                'id': user.id,
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name,
+                'access': str(refresh.access_token),
+                'refresh': str(refresh)
+            }, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            return Response(
+                {'message': f'Error creating guest account: {str(e)}'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )

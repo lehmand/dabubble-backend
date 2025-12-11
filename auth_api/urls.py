@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegistrationView, ActivationView, CookieTokenObtainPairView, CookieTokenRefreshView
+from .views import RegistrationView, ActivationView, CookieTokenObtainPairView, CookieTokenRefreshView, CreateGuestView
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
@@ -7,4 +7,5 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', ActivationView.as_view()),
     path('token/', CookieTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', CookieTokenRefreshView.as_view(), name='token_refresh'),
+    path('guest/', CreateGuestView.as_view(), name='create-guest'),
 ]
