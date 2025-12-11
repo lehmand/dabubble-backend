@@ -134,5 +134,14 @@ class ThreadReplySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ['id', 'sender', 'text', 'created_at', 'is_edited', 'edited_at']
+        fields = ['id', 'sender', 'text', 'parent_message', 'created_at', 'is_edited', 'edited_at']
         read_only_fields = ['created_at', 'is_edited', 'edited_at']
+
+
+    def update(self, instance, validated_data):
+        """Update thread message"""
+        instance.text = validated_data.get('text', instance.text)
+        instance.is_edited = True
+        instance.edited_at = timezone.now()
+        instance.save()
+        return instance

@@ -260,7 +260,7 @@ class EditDMMessage(APIView):
 
 
 class ThreadReplyView(APIView):
-    """Create, edit and delete thread reply messages"""
+    """Create and get thread reply messages"""
     
     def post(self, request, message_id):
         """Create thread message"""
@@ -276,4 +276,40 @@ class ThreadReplyView(APIView):
                     parent_message=message
                     )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def get(self, request, message_id):
+        messages = Message.objects.filter(parent_message_id=message_id)
+        serializer = ThreadReplySerializer(messages, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EditThreadReply(APIView):
+    """Delete and edit thread reply messages"""
+
+    permission_classes = [IsOwner]
+
+    def delete(self, request, message_id):
+        """Delete thread message"""
+        try:
+            message = Message.objects.get(pk=message_id)
+        except Message.DoesNotExist:
+            return Response({'message': 'message not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        message.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    def patch(self, request, message_id):
+        """Edit thread message"""
+        try:
+            message = Message.objects.get(pk=message_id)
+        except Message.DoesNotExist:
+            return Response({'message': 'message not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ThreadReplySerializer(message, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
