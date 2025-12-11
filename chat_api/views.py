@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
-from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer, ChannelMessageSerializer, EditChannelMessageSerializer, DetailDMConversationSerializer, DMMessageSerialzer
+from .serializers import BasicChannelListSerializer, CreateChannelSerializer, DetailChannelSerializer, ManageChannelMemberSerializer, ChannelMessageSerializer, EditChannelMessageSerializer, DetailDMConversationSerializer, DMMessageSerialzer, ThreadReplySerializer
 from .models import Channel, ChannelMembership, Message, DMConversation
 from .permissions import IsOwner
 
@@ -257,3 +257,23 @@ class EditDMMessage(APIView):
         self.check_object_permissions(request, message)
         message.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ThreadReplyView(APIView):
+    """Create, edit and delete thread reply messages"""
+    
+    def post(self, request, message_id):
+        """Create thread message"""
+        try:
+            message = Message.objects.get(pk=message_id)
+        except Message.DoesNotExist:
+            return Response({'message': 'message not found'})
+
+        serializer = ThreadReplySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(
+                    sender=request.user,
+                    parent_message=message
+                    )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

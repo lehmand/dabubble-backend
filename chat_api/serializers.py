@@ -84,14 +84,6 @@ class ChannelMessageSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'created_at']
 
 
-class ThreadMessageSerializer(serializers.ModelSerializer):
-    """Serializer for posting thread messages"""
-    class Meta:
-        model = Message
-        fields = ['id', 'text', 'created_at']
-        read_only_fields = ['id', 'created_at']
-
-
 class EditChannelMessageSerializer(serializers.ModelSerializer):
     """Edit channel messages"""
     class Meta:
@@ -133,3 +125,14 @@ class DetailDMConversationSerializer(serializers.ModelSerializer):
     class Meta:
         model = DMConversation
         fields = ['id', 'user_1_info', 'user_2_info', 'created_at', 'messages']
+
+
+class ThreadReplySerializer(serializers.ModelSerializer):
+    """Serializer for creating thread reply messages"""
+    
+    sender = ChannelMemberSerializer(read_only=True)
+
+    class Meta:
+        model = Message
+        fields = ['id', 'sender', 'text', 'created_at', 'is_edited', 'edited_at']
+        read_only_fields = ['created_at', 'is_edited', 'edited_at']
